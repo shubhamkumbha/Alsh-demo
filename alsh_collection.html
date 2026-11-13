@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALSH COLLECTION | Premium Jewellery & Fashion Accessories</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        alsh: {
+                            blush: '#FBF4F1',
+                            ivory: '#FAF8F5',
+                            burgundy: '#4A1521',
+                            burgundyLight: '#63202E',
+                            champagne: '#D4AF37',
+                            champagneLight: '#F3E5AB',
+                            charcoal: '#222222',
+                            muted: '#777777',
+                            border: '#E8E1DC'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'Georgia', 'serif'],
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FAF8F5;
+            color: #222222;
+        }
+        h1, h2, h3, h4, .font-serif {
+            font-family: 'Playfair Display', Georgia, serif;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAF8F5;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4AF37;
+            border-radius: 3px;
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-alsh-ivory text-alsh-charcoal antialiased selection:bg-alsh-champagne selection:text-white">
+
+    <!-- Notification / Toast Message Box -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 bg-alsh-burgundy text-white px-6 py-3 rounded-none shadow-2xl flex items-center space-x-3 border border-alsh-champagne/40">
+        <i class="fa-solid fa-circle-check text-alsh-champagne"></i>
+        <span id="toast-message" class="text-sm tracking-wide font-light">Item added to your shopping bag</span>
+    </div>
+
+    <!-- 1. Announcement Bar -->
+    <div class="bg-alsh-burgundy text-alsh-ivory text-xs tracking-widest py-2 px-4 text-center font-light uppercase border-b border-white/10 flex justify-center items-center space-x-4">
+        <span>✨ Complimentry shipping across India on orders above ₹1,499 | Kanjur East, Mumbai</span>
+        <span class="hidden md:inline text-alsh-champagne">•</span>
+        <span class="hidden md:inline">Use code ALSH10 for 10% off</span>
+    </div>
+
+    <!-- 2. Header -->
+    <header id="site-header" class="sticky top-0 z-40 bg-alsh-ivory/95 backdrop-blur-md border-b border-alsh-border transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Mobile Menu Toggle -->
+            <button onclick="toggleMobileMenu()" class="lg:hidden text-alsh-charcoal hover:text-alsh-champagne p-2 focus:outline-none">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+
+            <!-- Navigation Links (Desktop) -->
+            <nav class="hidden lg:flex items-center space-x-8 text-sm tracking-widest uppercase font-medium">
+                <a href="#home" onclick="switchView('home')" class="hover:text-alsh-champagne transition-colors pb-1 border-b-2 border-alsh-champagne">Home</a>
+                <a href="#shop" onclick="switchView('shop')" class="hover:text-alsh-champagne transition-colors text-alsh-charcoal/80">Shop</a>
+                <a href="#collections" onclick="filterCategory('All')" class="hover:text-alsh-champagne transition-colors text-alsh-charcoal/80">Collections</a>
+                <a href="#about" onclick="switchView('about')" class="hover:text-alsh-champagne transition-colors text-alsh-charcoal/80">About</a>
+            </nav>
+
+            <!-- Brand Logo -->
+            <div class="text-center cursor-pointer" onclick="switchView('home')">
+                <h1 class="text-2xl sm:text-3xl font-serif tracking-[0.25em] font-semibold text-alsh-burgundy">ALSH</h1>
+                <p class="text-[9px] tracking-[0.3em] uppercase text-alsh-muted -mt-1">Collection</p>
+            </div>
+
+            <!-- Right Utilities -->
+            <div class="flex items-center space-x-5 sm:space-x-6">
+                <button onclick="toggleSearchModal()" class="text-alsh-charcoal hover:text-alsh-champagne transition-colors p-2" title="Search">
+                    <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                </button>
+                <a href="#about" onclick="switchView('about')" class="hidden sm:inline-block text-alsh-charcoal hover:text-alsh-champagne transition-colors text-xs tracking-widest uppercase font-medium">
+                    Contact
+                </a>
+                <button onclick="toggleCartDrawer()" class="relative text-alsh-charcoal hover:text-alsh-champagne transition-colors p-2 flex items-center space-x-2" title="Cart">
+                    <i class="fa-bag-shopping fa-solid text-lg"></i>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-alsh-burgundy text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-sans">0</span>
+                    <span class="hidden md:inline text-xs tracking-wider uppercase font-medium ml-1">Bag</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden lg:hidden transition-opacity duration-300">
+        <div class="bg-alsh-ivory w-4/5 max-w-sm h-full shadow-2xl p-6 flex flex-col justify-between transform -translate-x-full transition-transform duration-300" id="mobile-menu-panel">
+            <div>
+                <div class="flex justify-between items-center mb-8 pb-4 border-b border-alsh-border">
+                    <div class="text-xl font-serif tracking-[0.2em] font-bold text-alsh-burgundy">ALSH</div>
+                    <button onclick="toggleMobileMenu()" class="text-alsh-charcoal hover:text-alsh-burgundy p-2">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+                <nav class="flex flex-col space-y-6 text-sm tracking-widest uppercase font-medium">
+                    <a href="#home" onclick="toggleMobileMenu(); switchView('home');" class="hover:text-alsh-champagne">Home</a>
+                    <a href="#shop" onclick="toggleMobileMenu(); switchView('shop');" class="hover:text-alsh-champagne">All Products</a>
+                    <a href="#shop" onclick="toggleMobileMenu(); filterCategory('Korean Accessories');" class="text-alsh-muted hover:text-alsh-champagne pl-4 text-xs">↳ Korean Accessories</a>
+                    <a href="#shop" onclick="toggleMobileMenu(); filterCategory('Anti-Tarnish Jewellery');" class="text-alsh-muted hover:text-alsh-champagne pl-4 text-xs">↳ Anti-Tarnish Jewellery</a>
+                    <a href="#shop" onclick="toggleMobileMenu(); filterCategory('Chains & Earrings');" class="text-alsh-muted hover:text-alsh-champagne pl-4 text-xs">↳ Chains & Earrings</a>
+                    <a href="#shop" onclick="toggleMobileMenu(); filterCategory('Watches & Bags');" class="text-alsh-muted hover:text-alsh-champagne pl-4 text-xs">↳ Watches & Bags</a>
+                    <a href="#about" onclick="toggleMobileMenu(); switchView('about');" class="hover:text-alsh-champagne">About Alsh</a>
+                </nav>
+            </div>
+            <div class="pt-6 border-t border-alsh-border text-xs text-alsh-muted text-center">
+                <p>Kanjur East, Mumbai, India</p>
+                <p class="mt-1 font-semibold text-alsh-burgundy">@alshcollection_</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-md hidden flex items-start justify-center pt-20 px-4 transition-all">
+        <div class="bg-alsh-ivory w-full max-w-2xl rounded-none shadow-2xl p-6 relative border border-alsh-champagne/30">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-serif text-lg tracking-wider text-alsh-burgundy">Search ALSH Collection</h3>
+                <button onclick="toggleSearchModal()" class="text-alsh-charcoal hover:text-alsh-burgundy p-2">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="relative">
+                <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Search earrings, anti-tarnish chains, mangalsutras, bags..." class="w-full bg-alsh-blush border border-alsh-border py-3 pl-12 pr-4 text-sm focus:outline-none focus:border-alsh-champagne tracking-wide">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-alsh-muted"></i>
+            </div>
+            <div id="search-results" class="mt-4 max-h-96 overflow-y-auto divide-y divide-alsh-border">
+                <!-- Live search results injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex justify-end transition-opacity">
+        <div class="bg-alsh-ivory w-full max-w-md h-full shadow-2xl flex flex-col justify-between transform translate-x-full transition-transform duration-300" id="cart-panel">
+            <div>
+                <div class="p-6 border-b border-alsh-border flex items-center justify-between bg-alsh-blush">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-bag-shopping text-alsh-burgundy"></i>
+                        <h3 class="font-serif text-lg tracking-wider font-semibold text-alsh-burgundy">Your Shopping Bag</h3>
+                    </div>
+                    <button onclick="toggleCartDrawer()" class="text-alsh-charcoal hover:text-alsh-burgundy p-2">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+                <div id="cart-items-container" class="p-6 max-h-[calc(100vh-260px)] overflow-y-auto divide-y divide-alsh-border">
+                    <!-- Cart items injected here -->
+                </div>
+            </div>
+            <div class="p-6 border-t border-alsh-border bg-alsh-blush">
+                <div class="flex justify-between items-center mb-4 text-sm">
+                    <span class="text-alsh-muted uppercase tracking-wider text-xs font-semibold">Subtotal</span>
+                    <span id="cart-subtotal" class="font-serif font-bold text-lg text-alsh-burgundy">₹0</span>
+                </div>
+                <p class="text-[11px] text-alsh-muted mb-4 tracking-wide">Taxes and shipping calculated at checkout. Demo mode active.</p>
+                <button onclick="openCheckoutModal()" class="w-full bg-alsh-burgundy hover:bg-alsh-burgundyLight text-alsh-ivpy text-white py-3.5 text-xs tracking-[0.2em] uppercase font-semibold transition-all duration-300 shadow-md">
+                    Proceed to Checkout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Demo Checkout Modal -->
+    <div id="checkout-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-alsh-ivory w-full max-w-lg rounded-none shadow-2xl p-8 relative border border-alsh-champagne/40">
+            <div class="flex justify-between items-center mb-6 pb-3 border-b border-alsh-border">
+                <h3 class="font-serif text-xl font-semibold text-alsh-burgundy">Demo Secure Checkout</h3>
+                <button onclick="closeCheckoutModal()" class="text-alsh-charcoal hover:text-alsh-burgundy">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-4 text-sm">
+                <div class="bg-alsh-blush p-4 border border-alsh-border text-xs text-alsh-burgundy mb-4">
+                    <i class="fa-solid fa-circle-info mr-1.5 text-alsh-champagne"></i> This is a frontend demo for ALSH Collection (Kanjur East, Mumbai). No real payment will be processed.
+                </div>
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-alsh-muted mb-1">Full Name</label>
+                    <input type="text" value="Priya Sharma" class="w-full bg-white border border-alsh-border p-3 text-sm focus:outline-none focus:border-alsh-champagne">
+                </div>
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-alsh-muted mb-1">Delivery Address (Mumbai / India)</label>
+                    <input type="text" value="Shop No. 4, Station Road, Kanjurmarg East" class="w-full bg-white border border-alsh-border p-3 text-sm focus:outline-none focus:border-alsh-champagne">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-alsh-muted mb-1">Phone Number</label>
+                        <input type="text" value="+91 98201 XXXXX" class="w-full bg-white border border-alsh-border p-3 text-sm focus:outline-none focus:border-alsh-champagne">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-alsh-muted mb-1">Payment Method</label>
+                        <select class="w-full bg-white border border-alsh-border p-3 text-sm focus:outline-none focus:border-alsh-champagne">
+                            <option>Demo UPI / GPay / PhonePe</option>
+                            <option>Cash on Delivery (Mumbai)</option>
+                            <option>Credit / Debit Card (Demo)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <button onclick="completeOrder()" class="w-full bg-alsh-burgundy hover:bg-alsh-burgundyLight text-white py-4 text-xs tracking-[0.2em] uppercase font-semibold transition-all">
+                        Place Demo Order Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN VIEWS CONTAINER -->
+    <main id="main-content">
+
+        <!-- VIEW 1: HOME PAGE -->
+        <div id="view-home" class="view-section">
+            
+            <!-- Hero Banner -->
+            <section class="relative h-[85vh] min-h-[550px] flex items-center justify-center bg-alsh-burgundy overflow-hidden">
+                <div class="absolute inset-0 z-0 opacity-40 mix-blend-overlay">
+                    <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1920&auto=format&fit=crop" alt="ALSH Editorial Jewellery" class="w-full h-full object-cover object-center scale-105 animate-pulse duration-1000">
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-t from-alsh-burgundy via-black/40 to-transparent"></div>
+                <div class="relative z-10 text-center px-4 max-w-4xl mx-auto mt-12">
+                    <p class="text-alsh-champagneLight text-xs sm:text-sm tracking-[0.3em] uppercase mb-4 font-light">ALSH Collection • Mumbai</p>
+                    <h2 class="text-4xl sm:text-6xl md:text-7xl font-serif text-alsh-ivory font-normal tracking-wide leading-tight mb-8">
+                        A LITTLE DETAIL.<br><span class="italic font-light text-alsh-champagneLight">A LOT OF ELEGANCE.</span>
+                    </h2>
+                    <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-5">
+                        <button onclick="switchView('shop'); filterCategory('All');" class="bg-alsh-ivory text-alsh-burgundy hover:bg-alsh-champagne hover:text-white px-8 py-4 text-xs tracking-[0.25em] uppercase font-semibold transition-all duration-300 shadow-lg">
+                            Explore Collection
+                        </button>
+                        <a href="#categories" class="text-alsh-ivory hover:text-alsh-champagneLight text-xs tracking-[0.2em] uppercase font-medium py-3 px-6 transition-colors">
+                            Shop Categories <i class="fa-solid fa-arrow-down ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Brand Promise Marquee / Intro -->
+            <section class="py-16 bg-alsh-blush border-b border-alsh-border">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h3 class="font-serif text-2xl sm:text-3xl text-alsh-burgundy mb-3">Designed for Everyday Grace</h3>
+                    <p class="text-alsh-muted max-w-2xl mx-auto text-sm leading-relaxed font-light">
+                        Curated in Kanjur East, Mumbai. Our anti-tarnish jewellery, Korean accessories, and handcrafted bags bring effortless luxury to your daily wardrobe without compromise.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Shop by Category Section -->
+            <section id="categories" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-end mb-12">
+                    <div>
+                        <span class="text-xs uppercase tracking-[0.25em] text-alsh-muted block mb-2">Curated Selections</span>
+                        <h2 class="text-3xl font-serif text-alsh-burgundy">Shop by Category</h2>
+                    </div>
+                    <button onclick="switchView('shop'); filterCategory('All');" class="text-xs tracking-widest uppercase font-semibold text-alsh-burgundy hover:text-alsh-champagne transition-colors pb-1 border-b border-alsh-burgundy">
+                        View All (16) <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Category 1 -->
+                    <div onclick="switchView('shop'); filterCategory('Anti-Tarnish Jewellery');" class="group relative h-96 overflow-hidden cursor-pointer shadow-md bg-alsh-blush">
+                        <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop" alt="Anti-Tarnish Jewellery" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 right-6 text-white">
+                            <span class="text-[10px] tracking-[0.25em] uppercase text-alsh-champagneLight">Waterproof & Durable</span>
+                            <h3 class="text-xl font-serif font-medium mt-1">Anti-Tarnish Jewellery</h3>
+                            <span class="inline-block mt-3 text-xs tracking-widest uppercase border-b border-white/80 pb-0.5 group-hover:border-alsh-champagne group-hover:text-alsh-champagne transition-colors">Explore Category</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 2 -->
+                    <div onclick="switchView('shop'); filterCategory('Korean Accessories');" class="group relative h-96 overflow-hidden cursor-pointer shadow-md bg-alsh-blush">
+                        <img src="https://images.unsplash.com/photo-1611591470711-2e1858e38d01?q=80&w=800&auto=format&fit=crop" alt="Korean Accessories" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 right-6 text-white">
+                            <span class="text-[10px] tracking-[0.25em] uppercase text-alsh-champagneLight">Trendsetting Aesthetic</span>
+                            <h3 class="text-xl font-serif font-medium mt-1">Korean Accessories</h3>
+                            <span class="inline-block mt-3 text-xs tracking-widest uppercase border-b border-white/80 pb-0.5 group-hover:border-alsh-champagne group-hover:text-alsh-champagne transition-colors">Explore Category</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 3 -->
+                    <div onclick="switchView('shop'); filterCategory('Chains & Earrings');" class="group relative h-96 overflow-hidden cursor-pointer shadow-md bg-alsh-blush">
+                        <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop" alt="Chains & Earrings" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 right-6 text-white">
+                            <span class="text-[10px] tracking-[0.25em] uppercase text-alsh-champagneLight">Statement Pieces</span>
+                            <h3 class="text-xl font-serif font-medium mt-1">Chains & Earrings</h3>
+                            <span class="inline-block mt-3 text-xs tracking-widest uppercase border-b border-white/80 pb-0.5 group-hover:border-alsh-champagne group-hover:text-alsh-champagne transition-colors">Explore Category</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 4 -->
+                    <div onclick="switchView('shop'); filterCategory('Watches & Bags');" class="group relative h-96 overflow-hidden cursor-pointer shadow-md bg-alsh-blush">
+                        <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=800&auto=format&fit=crop" alt="Watches & Bags" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 right-6 text-white">
+                            <span class="text-[10px] tracking-[0.25em] uppercase text-alsh-champagneLight">Refined Luxury</span>
+                            <h3 class="text-xl font-serif font-medium mt-1">Watches & Bags</h3>
+                            <span class="inline-block mt-3 text-xs tracking-widest uppercase border-b border-white/80 pb-0.5 group-hover:border-alsh-champagne group-hover:text-alsh-champagne transition-colors">Explore Category</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- New Arrivals Section -->
+            <section class="py-16 bg-alsh-blush/50 border-t border-alsh-border">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between items-end mb-10">
+                        <div>
+                            <span class="text-xs uppercase tracking-[0.25em] text-alsh-muted block mb-2">Just Landed</span>
+                            <h2 class="text-3xl font-serif text-alsh-burgundy">New Arrivals</h2>
+                        </div>
+                        <button onclick="switchView('shop')" class="text-xs tracking-widest uppercase font-semibold text-alsh-burgundy hover:text-alsh-champagne transition-colors">
+                            Shop All New <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                    <!-- Product Grid rendered via JS -->
+                    <div id="new-arrivals-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- Populated by renderProducts() -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Full-Width Editorial Promo Banner -->
+            <section class="relative py-32 bg-alsh-burgundy text-white overflow-hidden my-12">
+                <div class="absolute inset-0 opacity-30 mix-blend-overlay">
+                    <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1920&auto=format&fit=crop" alt="Editorial Banner" class="w-full h-full object-cover">
+                </div>
+                <div class="relative z-10 max-w-3xl mx-auto text-center px-4">
+                    <span class="text-alsh-champagneLight text-xs tracking-[0.3em] uppercase block mb-3">Signature Series</span>
+                    <h2 class="text-3xl sm:text-5xl font-serif mb-6 leading-tight">The Anti-Tarnish Gold Edit</h2>
+                    <p class="text-alsh-ivory/80 text-sm sm:text-base font-light mb-8 max-w-xl mx-auto">
+                        Crafted for the modern woman. Waterproof, sweat-proof, and hypoallergenic pieces designed to stay luminous through every moment.
+                    </p>
+                    <button onclick="switchView('shop'); filterCategory('Anti-Tarnish Jewellery');" class="bg-alsh-champagne text-alsh-burgundy hover:bg-white px-8 py-4 text-xs tracking-[0.25em] uppercase font-semibold transition-all duration-300 shadow-xl">
+                        Shop The Edit
+                    </button>
+                </div>
+            </section>
+
+            <!-- Bestsellers Section -->
+            <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-xl mx-auto mb-12">
+                    <span class="text-xs uppercase tracking-[0.25em] text-alsh-muted block mb-2">Most Loved</span>
+                    <h2 class="text-3xl font-serif text-alsh-burgundy">Customer Favourites</h2>
+                    <p class="text-xs text-alsh-muted mt-2 tracking-wide">The designs our Mumbai community cannot get enough of.</p>
+                </div>
+                <div id="bestsellers-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- Brand Story Section -->
+            <section id="about" class="py-20 bg-alsh-ivory border-t border-alsh-border">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <span class="text-xs uppercase tracking-[0.25em] text-alsh-muted block mb-3">Our Story</span>
+                            <h2 class="text-3xl sm:text-4xl font-serif text-alsh-burgundy mb-6 leading-tight">Rooted in Elegance, Styled for Today.</h2>
+                            <p class="text-alsh-charcoal/80 text-sm sm:text-base leading-relaxed font-light mb-4">
+                                Founded with a passion for refined accessories, **ALSH COLLECTION** brings international aesthetics—from delicate Korean hair claws to shimmering anti-tarnish chains and classic mangalsutras—right to your doorstep from our base in Kanjur East, Mumbai.
+                            </p>
+                            <p class="text-alsh-charcoal/80 text-sm sm:text-base leading-relaxed font-light mb-8">
+                                We believe luxury is in the details. Every piece in our collection is handpicked for its quality, finish, and ability to elevate both casual daytime wear and evening attire.
+                            </p>
+                            <div class="flex items-center space-x-6">
+                                <div>
+                                    <h4 class="font-serif text-2xl text-alsh-burgundy font-semibold">100%</h4>
+                                    <p class="text-xs uppercase tracking-wider text-alsh-muted mt-1">Anti-Tarnish Options</p>
+                                </div>
+                                <div class="w-px h-12 bg-alsh-border"></div>
+                                <div>
+                                    <h4 class="font-serif text-2xl text-alsh-burgundy font-semibold">Mumbai</h4>
+                                    <p class="text-xs uppercase tracking-wider text-alsh-muted mt-1">Based & Shipped</p>
+                                </div>
+                                <div class="w-px h-12 bg-alsh-border"></div>
+                                <div>
+                                    <h4 class="font-serif text-2xl text-alsh-burgundy font-semibold">15K+</h4>
+                                    <p class="text-xs uppercase tracking-wider text-alsh-muted mt-1">Happy Patrons</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <div class="relative h-[480px] overflow-hidden shadow-2xl bg-alsh-blush">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1000&auto=format&fit=crop" alt="ALSH Brand Story" class="w-full h-full object-cover">
+                            </div>
+                            <div class="absolute -bottom-6 -left-6 bg-alsh-burgundy text-white p-6 shadow-xl hidden sm:block max-w-xs">
+                                <p class="font-serif italic text-sm text-alsh-champagneLight">"Accessories are the punctuation of a woman's outfit."</p>
+                                <span class="text-[10px] tracking-widest uppercase mt-2 block text-alsh-ivory/70">— ALSH Team</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Instagram Visual Gallery -->
+            <section class="py-16 bg-alsh-blush border-t border-alsh-border">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between items-center mb-10">
+                        <div>
+                            <span class="text-xs uppercase tracking-[0.25em] text-alsh-muted block mb-1">Social Community</span>
+                            <h3 class="text-2xl font-serif text-alsh-burgundy">Follow @alshcollection_</h3>
+                        </div>
+                        <a href="https://instagram.com/alshcollection_" target="_blank" class="text-xs tracking-widest uppercase font-semibold text-alsh-burgundy hover:text-alsh-champagne transition-colors flex items-center space-x-2">
+                            <i class="fa-brands fa-instagram text-base"></i>
+                            <span>View Instagram</span>
+                        </a>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        <div class="relative group overflow-hidden h-44 shadow-sm bg-white">
+                            <img src="https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?q=80&w=400&auto=format&fit=crop" alt="Instagram 1" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                                <i class="fa-brands fa-instagram text-2xl"></i>
+                            </div>
+                        </div>
+                        <div class="relative group overflow-hidden h-44 shadow-sm bg-white">
+                            <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=400&auto=format&fit=crop" alt="Instagram 2" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                                <i class="fa-brands fa-instagram text-2xl"></i>
+                            </div>
+                        </div>
+                        <div class="relative group overflow-hidden h-44 shadow-sm bg-white">
+                            <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=400&auto=format&fit=crop" alt="Instagram 3" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                                <i class="fa-brands fa-instagram text-2xl"></i>
+                            </div>
+                        </div>
+                        <div class="relative group overflow-hidden h-44 shadow-sm bg-white">
+                            <img src="https://images.unsplash.com/photo-1611591470711-2e1858e38d01?q=80&w=400&auto=format&fit=crop" alt="Instagram 4" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                                <i class="fa-brands fa-instagram text-2xl"></i>
+                            </div>
+                        </div>
+                        <div class="relative group overflow-hidden h-44 shadow-sm bg-white hidden md:block">
+                            <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=400&auto=format&fit=crop" alt="Instagram 5" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                                <i class="fa-brands fa-instagram text-2xl"></i>
+                            </div>
+                        </div>
+                        <div class="relative group overflow-hidden h-44 shadow-sm bg-white hidden md:block">
+                            <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=400&auto=format&fit=crop" alt="Instagram 6" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                                <i class="fa-brands fa-instagram text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Newsletter Section -->
+            <section class="py-20 bg-alsh-burgundy text-white text-center">
+                <div class="max-w-2xl mx-auto px-4">
+                    <span class="text-alsh-champagneLight text-xs tracking-[0.3em] uppercase block mb-3">Join The Inner Circle</span>
+                    <h2 class="text-3xl font-serif mb-4">Enjoy 10% Off Your First Order</h2>
+                    <p class="text-alsh-ivory/80 text-xs sm:text-sm font-light mb-8">
+                        Subscribe to receive secret drop alerts, exclusive festive offers, and styling guides directly in your inbox.
+                    </p>
+                    <form onsubmit="event.preventDefault(); showToast('Thank you for subscribing! Use code ALSH10 at checkout.');" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                        <input type="email" required placeholder="Enter your email address" class="bg-white/10 border border-white/30 px-4 py-3 text-sm text-white placeholder-white/60 focus:outline-none focus:border-alsh-champagne flex-1">
+                        <button type="submit" class="bg-alsh-champagne text-alsh-burgundy hover:bg-white px-6 py-3 text-xs tracking-[0.2em] uppercase font-semibold transition-all">
+                            Subscribe
+                        </button>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+
+        <!-- VIEW 2: SHOP / CATALOGUE PAGE -->
+        <div id="view-shop" class="view-section hidden py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- Breadcrumbs & Title -->
+                <div class="mb-8 pb-6 border-b border-alsh-border">
+                    <div class="text-xs text-alsh-muted uppercase tracking-widest mb-2">
+                        <span onclick="switchView('home')" class="cursor-pointer hover:text-alsh-burgundy">Home</span> / <span class="text-alsh-burgundy font-medium">Catalogue</span>
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-serif text-alsh-burgundy">ALSH Catalogue</h2>
+                    <p class="text-xs sm:text-sm text-alsh-muted mt-1">Explore our complete collection of anti-tarnish jewellery, Korean accessories, chains & watches.</p>
+                </div>
+
+                <!-- Filters & Sorting Bar -->
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-10 pb-6 border-b border-alsh-border">
+                    <!-- Category Filter Buttons -->
+                    <div class="flex flex-wrap gap-2 text-xs tracking-wider uppercase font-medium">
+                        <button onclick="filterCategory('All')" id="cat-btn-All" class="cat-filter-btn px-4 py-2 bg-alsh-burgundy text-white transition-all shadow-sm">All Items</button>
+                        <button onclick="filterCategory('Anti-Tarnish Jewellery')" id="cat-btn-Anti-Tarnish Jewellery" class="cat-filter-btn px-4 py-2 bg-alsh-blush text-alsh-charcoal hover:bg-alsh-border transition-all">Anti-Tarnish</button>
+                        <button onclick="filterCategory('Korean Accessories')" id="cat-btn-Korean Accessories" class="cat-filter-btn px-4 py-2 bg-alsh-blush text-alsh-charcoal hover:bg-alsh-border transition-all">Korean</button>
+                        <button onclick="filterCategory('Chains & Earrings')" id="cat-btn-Chains & Earrings" class="cat-filter-btn px-4 py-2 bg-alsh-blush text-alsh-charcoal hover:bg-alsh-border transition-all">Chains & Earrings</button>
+                        <button onclick="filterCategory('Watches & Bags')" id="cat-btn-Watches & Bags" class="cat-filter-btn px-4 py-2 bg-alsh-blush text-alsh-charcoal hover:bg-alsh-border transition-all">Watches & Bags</button>
+                    </div>
+
+                    <!-- Sort Dropdown -->
+                    <div class="flex items-center space-x-3 text-xs tracking-wider">
+                        <span class="text-alsh-muted uppercase">Sort By:</span>
+                        <select id="sort-select" onchange="sortProducts(this.value)" class="bg-alsh-blush border border-alsh-border px-3 py-2 focus:outline-none focus:border-alsh-champagne text-alsh-charcoal">
+                            <option value="featured">Featured Selections</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="name">Alphabetical</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Product Grid -->
+                <div id="shop-product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Populated via JS -->
+                </div>
+
+                <!-- Empty State for Filters -->
+                <div id="shop-empty-state" class="hidden py-24 text-center">
+                    <i class="fa-solid fa-gem text-4xl text-alsh-champagne mb-4"></i>
+                    <h3 class="text-xl font-serif text-alsh-burgundy mb-2">No matching accessories found</h3>
+                    <p class="text-xs text-alsh-muted mb-6">Try selecting a different category or resetting filters.</p>
+                    <button onclick="filterCategory('All')" class="bg-alsh-burgundy text-white px-6 py-2.5 text-xs tracking-widest uppercase font-semibold">View All Items</button>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- VIEW 3: PRODUCT DETAIL PAGE (PDP) -->
+        <div id="view-pdp" class="view-section hidden py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Breadcrumbs -->
+                <div class="text-xs text-alsh-muted uppercase tracking-widest mb-6">
+                    <span onclick="switchView('home')" class="cursor-pointer hover:text-alsh-burgundy">Home</span> / 
+                    <span onclick="switchView('shop')" class="cursor-pointer hover:text-alsh-burgundy">Catalogue</span> / 
+                    <span id="pdp-category-crumb" class="text-alsh-muted">Category</span> / 
+                    <span id="pdp-name-crumb" class="text-alsh-burgundy font-medium">Product</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+                    <!-- Image Gallery -->
+                    <div class="space-y-4">
+                        <div class="relative h-[480px] sm:h-[560px] bg-alsh-blush overflow-hidden shadow-md border border-alsh-border">
+                            <img id="pdp-main-image" src="" alt="Product Image" class="w-full h-full object-cover object-center transition-all duration-500">
+                            <span id="pdp-badge" class="absolute top-4 left-4 bg-alsh-burgundy text-alsh-ivory text-[10px] tracking-widest uppercase px-3 py-1 font-semibold">Bestseller</span>
+                        </div>
+                    </div>
+
+                    <!-- Product Details -->
+                    <div class="flex flex-col justify-between">
+                        <div>
+                            <span id="pdp-category" class="text-xs uppercase tracking-[0.25em] text-alsh-champagne font-semibold block mb-2">Category</span>
+                            <h2 id="pdp-title" class="text-3xl sm:text-4xl font-serif text-alsh-burgundy mb-4">Product Title</h2>
+                            
+                            <!-- Pricing -->
+                            <div class="flex items-center space-x-4 mb-6">
+                                <span id="pdp-price" class="text-2xl font-serif font-bold text-alsh-burgundy">₹0</span>
+                                <span id="pdp-old-price" class="text-base text-alsh-muted line-through font-light">₹0</span>
+                                <span class="bg-alsh-blush text-alsh-burgundy text-[10px] uppercase px-2 py-1 tracking-wider font-semibold border border-alsh-border">Inclusive of all taxes</span>
+                            </div>
+
+                            <!-- Description -->
+                            <p id="pdp-description" class="text-alsh-charcoal/80 text-sm leading-relaxed font-light mb-6">
+                                Description goes here...
+                            </p>
+
+                            <!-- Features / Highlights -->
+                            <div class="bg-alsh-blush p-4 mb-8 border border-alsh-border space-y-2 text-xs text-alsh-charcoal">
+                                <div class="flex items-center space-x-2"><i class="fa-solid fa-shield-halved text-alsh-champagne"></i><span>Water & Sweat Resistant Anti-Tarnish Finish</span></div>
+                                <div class="flex items-center space-x-2"><i class="fa-solid fa-truck-fast text-alsh-champagne"></i><span>Ships securely from Kanjur East, Mumbai</span></div>
+                                <div class="flex items-center space-x-2"><i class="fa-solid fa-gift text-alsh-champagne"></i><span>Delivered in signature ALSH gift packaging</span></div>
+                            </div>
+
+                            <!-- Quantity Selector & Add to Cart -->
+                            <div class="flex items-center space-x-4 mb-8">
+                                <div class="flex items-center border border-alsh-border bg-white">
+                                    <button onclick="decrementQty()" class="px-4 py-3 text-alsh-muted hover:text-alsh-burgundy transition-colors"><i class="fa-solid fa-minus text-xs"></i></button>
+                                    <span id="pdp-qty" class="w-10 text-center text-sm font-semibold">1</span>
+                                    <button onclick="incrementQty()" class="px-4 py-3 text-alsh-muted hover:text-alsh-burgundy transition-colors"><i class="fa-solid fa-plus text-xs"></i></button>
+                                </div>
+                                <button onclick="addCurrentProductToCart()" class="flex-1 bg-alsh-burgundy hover:bg-alsh-burgundyLight text-white py-3.5 px-6 text-xs tracking-[0.2em] uppercase font-semibold transition-all duration-300 shadow-md flex items-center justify-center space-x-2">
+                                    <i class="fa-bag-shopping"></i>
+                                    <span>Add to Shopping Bag</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Accordion Details -->
+                        <div class="border-t border-alsh-border pt-6 space-y-4 text-xs">
+                            <details class="group">
+                                <summary class="cursor-pointer font-medium uppercase tracking-wider flex justify-between items-center text-alsh-burgundy">
+                                    <span>Care & Maintenance</span>
+                                    <i class="fa-solid fa-chevron-down group-open:rotate-180 transition-transform"></i>
+                                </summary>
+                                <p class="mt-2 text-alsh-muted font-light leading-relaxed">
+                                    Avoid direct contact with perfumes, harsh chemicals, and body lotions. Wipe clean with a soft dry cloth after wear and store in the provided ALSH pouch.
+                                </p>
+                            </details>
+                            <details class="group border-t border-alsh-border pt-3">
+                                <summary class="cursor-pointer font-medium uppercase tracking-wider flex justify-between items-center text-alsh-burgundy">
+                                    <span>Shipping & Mumbai Pickup</span>
+                                    <i class="fa-solid fa-chevron-down group-open:rotate-180 transition-transform"></i>
+                                </summary>
+                                <p class="mt-2 text-alsh-muted font-light leading-relaxed">
+                                    Standard delivery across Mumbai & India takes 3-5 business days. Express shipping options available at checkout.
+                                </p>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-alsh-burgundy text-alsh-ivory pt-16 pb-12 border-t border-alsh-champagne/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-16">
+                <!-- Brand Info -->
+                <div class="lg:col-span-2 space-y-4">
+                    <h2 class="text-3xl font-serif tracking-[0.2em] font-bold text-alsh-ivory">ALSH</h2>
+                    <p class="text-xs uppercase tracking-[0.3em] text-alsh-champagneLight">Collection • Mumbai</p>
+                    <p class="text-alsh-ivory/70 text-xs leading-relaxed font-light max-w-sm">
+                        Trendy, affordable, and elegant everyday accessories curated for women who love subtle luxury. Based in Kanjur East, Mumbai.
+                    </p>
+                    <div class="flex space-x-4 pt-2">
+                        <a href="https://instagram.com/alshcollection_" target="_blank" class="w-9 h-9 rounded-full bg-white/10 hover:bg-alsh-champagne hover:text-alsh-burgundy flex items-center justify-center transition-all text-sm">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-alsh-champagne hover:text-alsh-burgundy flex items-center justify-center transition-all text-sm">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-alsh-champagne hover:text-alsh-burgundy flex items-center justify-center transition-all text-sm">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-xs uppercase tracking-[0.25em] font-semibold mb-4 text-alsh-champagneLight">Shop Catalogue</h4>
+                    <ul class="space-y-2.5 text-xs text-alsh-ivory/80 font-light">
+                        <li><a href="#shop" onclick="filterCategory('Anti-Tarnish Jewellery')" class="hover:text-alsh-champagne">Anti-Tarnish Jewellery</a></li>
+                        <li><a href="#shop" onclick="filterCategory('Korean Accessories')" class="hover:text-alsh-champagne">Korean Accessories</a></li>
+                        <li><a href="#shop" onclick="filterCategory('Chains & Earrings')" class="hover:text-alsh-champagne">Chains & Earrings</a></li>
+                        <li><a href="#shop" onclick="filterCategory('Watches & Bags')" class="hover:text-alsh-champagne">Watches & Handbags</a></li>
+                        <li><a href="#shop" onclick="filterCategory('All')" class="hover:text-alsh-champagne">View All Products</a></li>
+                    </ul>
+                </div>
+
+                <!-- Customer Care -->
+                <div>
+                    <h4 class="text-xs uppercase tracking-[0.25em] font-semibold mb-4 text-alsh-champagneLight">Customer Care</h4>
+                    <ul class="space-y-2.5 text-xs text-alsh-ivory/80 font-light">
+                        <li><a href="#about" onclick="switchView('about')" class="hover:text-alsh-champagne">Contact & Location</a></li>
+                        <li><a href="#" onclick="showToast('Shipping policy: Dispatched from Kanjur East, Mumbai within 24 hours.')" class="hover:text-alsh-champagne">Shipping Information</a></li>
+                        <li><a href="#" onclick="showToast('Returns: Easy 7-day exchange for unused items.')" class="hover:text-alsh-champagne">Returns & Exchanges</a></li>
+                        <li><a href="#" onclick="showToast('Care guide: Keep away from moisture and perfumes.')" class="hover:text-alsh-champagne">Jewellery Care Guide</a></li>
+                    </ul>
+                </div>
+
+                <!-- Location & Hours -->
+                <div>
+                    <h4 class="text-xs uppercase tracking-[0.25em] font-semibold mb-4 text-alsh-champagneLight">Studio Location</h4>
+                    <p class="text-xs text-alsh-ivory/80 font-light leading-relaxed mb-3">
+                        Kanjur East, Mumbai, Maharashtra, 400042, India
+                    </p>
+                    <p class="text-xs text-alsh-champagneLight font-medium">
+                        Instagram: @alshcollection_
+                    </p>
+                    <p class="text-[11px] text-alsh-ivory/60 mt-3">
+                        Online Demo Store © 2026 ALSH Collection. All illustrative sample prices.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Bottom Copyright -->
+            <div class="pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center text-xs text-alsh-ivory/60 font-light">
+                <p>Designed with elegance for ALSH Collection, Mumbai.</p>
+                <div class="flex space-x-6 mt-4 sm:mt-0">
+                    <span class="hover:text-alsh-champagne cursor-pointer">Privacy Policy</span>
+                    <span class="hover:text-alsh-champagne cursor-pointer">Terms of Service</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // DEMO PRODUCT CATALOGUE (16 Items across 4 Categories)
+        const products = [
+            {
+                id: 1,
+                name: "Aurelia Anti-Tarnish Gold Chain",
+                category: "Anti-Tarnish Jewellery",
+                price: 899,
+                oldPrice: 1499,
+                badge: "Bestseller",
+                image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop",
+                description: "Exquisite 18K gold-plated stainless steel chain with waterproof and anti-tarnish coating. Designed for effortless daily wear."
+            },
+            {
+                id: 2,
+                name: "Seoul Pearl Drop Korean Earrings",
+                category: "Korean Accessories",
+                price: 549,
+                oldPrice: 899,
+                badge: "Trending",
+                image: "https://images.unsplash.com/photo-1630019852942-f89202989a59?q=80&w=800&auto=format&fit=crop",
+                description: "Delicate Korean-style drop earrings featuring lustrous baroque pearls and lightweight alloy. Perfect for brunch or festive evenings."
+            },
+            {
+                id: 3,
+                name: "Celestial Minimalist Watch",
+                category: "Watches & Bags",
+                price: 1899,
+                oldPrice: 2699,
+                badge: "New",
+                image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=800&auto=format&fit=crop",
+                description: "Rose gold mesh strap watch with minimalist sunray dial. Water-resistant and crafted with Japanese quartz movement."
+            },
+            {
+                id: 4,
+                name: "Zoya Elegant Stone Mangalsutra",
+                category: "Chains & Earrings",
+                price: 1199,
+                oldPrice: 1799,
+                badge: "Bestseller",
+                image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop",
+                description: "Modern traditional fusion mangalsutra featuring delicate black beads and sparkling cubic zirconia pendant in anti-tarnish gold."
+            },
+            {
+                id: 5,
+                name: "Velvet Quilted Crossbody Bag",
+                category: "Watches & Bags",
+                price: 2199,
+                oldPrice: 3199,
+                badge: "Limited",
+                image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=800&auto=format&fit=crop",
+                description: "Luxurious quilted blush pink handbag with gold chain strap. Compact yet spacious enough for all your essentials."
+            },
+            {
+                id: 6,
+                name: "Busan Blossom Hair Claw Clip",
+                category: "Korean Accessories",
+                price: 399,
+                oldPrice: 699,
+                badge: "Popular",
+                image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=800&auto=format&fit=crop",
+                description: "Acetate flower hair claw imported directly from Korean design studios. Strong grip with a delicate matte pastel finish."
+            },
+            {
+                id: 7,
+                name: "Solitaire Anti-Tarnish Ring",
+                category: "Anti-Tarnish Jewellery",
+                price: 699,
+                oldPrice: 1099,
+                badge: "Bestseller",
+                image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=800&auto=format&fit=crop",
+                description: "Brilliant solitaire ring set in tarnish-proof stainless steel base. Hypoallergenic and comfortable for all-day wear."
+            },
+            {
+                id: 8,
+                name: "Gilded Geometric Hoop Earrings",
+                category: "Chains & Earrings",
+                price: 649,
+                oldPrice: 999,
+                badge: "Trending",
+                image: "https://images.unsplash.com/photo-1635767798638-3e25273a8236?q=80&w=800&auto=format&fit=crop",
+                description: "Chic geometric hoops with a high-polish 18K gold finish. Lightweight and designed to make an instant statement."
+            },
+            {
+                id: 9,
+                name: "Ivy Clover Anti-Tarnish Bracelet",
+                category: "Anti-Tarnish Jewellery",
+                price: 799,
+                oldPrice: 1299,
+                badge: "New",
+                image: "https://images.unsplash.com/photo-1611591470722-38447d3925c4?q=80&w=800&auto=format&fit=crop",
+                description: "Lucky four-leaf clover motif bracelet crafted with high-grade anti-tarnish titanium steel. Won't fade in water."
+            },
+            {
+                id: 10,
+                name: "Jeju Pastel Ribbon Hair Bow",
+                category: "Korean Accessories",
+                price: 349,
+                oldPrice: 599,
+                badge: "Cute",
+                image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800&auto=format&fit=crop",
+                description: "Satin ribbon hair clip in soft ivory. Adds an instant touch of feminine Korean aesthetic to ponytails and half-up dos."
+            },
+            {
+                id: 11,
+                name: "Chic Leatherette Tote Bag",
+                category: "Watches & Bags",
+                price: 2499,
+                oldPrice: 3599,
+                badge: "Spacious",
+                image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=800&auto=format&fit=crop",
+                description: "Premium vegan leather tote bag with secure zip closure. Ideal for work, college, or weekend outings in Mumbai."
+            },
+            {
+                id: 12,
+                name: "Layered Serpent Chain Necklace",
+                category: "Chains & Earrings",
+                price: 999,
+                oldPrice: 1599,
+                badge: "Trending",
+                image: "https://images.unsplash.com/photo-1599643477877-530eb83abc8e?q=80&w=800&auto=format&fit=crop",
+                description: "Double-layered flat snake chain necklace that hugs the collarbone with fluid liquid-metal shine."
+            },
+            {
+                id: 13,
+                name: "Pearl Beaded Korean Headband",
+                category: "Korean Accessories",
+                price: 499,
+                oldPrice: 799,
+                badge: "Popular",
+                image: "https://images.unsplash.com/photo-1590736969955-71cc94901144?q=80&w=800&auto=format&fit=crop",
+                description: "Hand-embellished pearl headband with comfortable anti-pinch velvet lining."
+            },
+            {
+                id: 14,
+                name: "Vintage Roman Numeral Watch",
+                category: "Watches & Bags",
+                price: 1999,
+                oldPrice: 2899,
+                badge: "Classic",
+                image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=800&auto=format&fit=crop",
+                description: "Timeless Roman numeral timepiece with genuine leather strap and gold bezel."
+            },
+            {
+                id: 15,
+                name: "Dainty Evil Eye Anti-Tarnish Anklet",
+                category: "Anti-Tarnish Jewellery",
+                price: 599,
+                oldPrice: 999,
+                badge: "New",
+                image: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=800&auto=format&fit=crop",
+                description: "Delicate protective evil eye charms dangling from a waterproof anti-tarnish chain."
+            },
+            {
+                id: 16,
+                name: "Crystal Butterfly Studs",
+                category: "Chains & Earrings",
+                price: 499,
+                oldPrice: 799,
+                badge: "Cute",
+                image: "https://images.unsplash.com/photo-1630019852942-f89202989a59?q=80&w=800&auto=format&fit=crop",
+                description: "Sparkling zirconia butterfly studs with secure push-back closures."
+            }
+        ];
+
+        // Application State
+// ... existing code ... -->
